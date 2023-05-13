@@ -26,5 +26,18 @@ class Trip extends Model
         'instant_booking',
         'departure_coord',
         'arrival_coord',
+        'driver_id',
     ];
+
+    public function driver() {
+        return $this->belongsTo(User::class, 'driver_id');
+    }
+
+    public function vehicleInfo() {
+        return $this->hasOne(VehicleInfo::class);
+    }
+
+    public function passengers() {
+        return $this->belongsToMany(User::class, 'trip_passenger');
+    }
 }

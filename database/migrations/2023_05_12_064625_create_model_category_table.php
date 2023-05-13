@@ -12,12 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::withoutForeignKeyConstraints(function () {
-            Schema::create('vehicle_models', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->foreignId('vehicle_brand_id')->constrained('vehicle_brands');
-                $table->index(['vehicle_brand_id', 'name']);
-                $table->timestamps();
+            Schema::create('model_category', function (Blueprint $table) {
+                $table->foreignId('vehicle_model_id')->constrained('vehicle_models');
+                $table->foreignId('vehicle_category_id')->constrained('vehicle_categories');
+                $table->index(['vehicle_model_id', 'vehicle_category_id']);
             });
         });
     }
@@ -28,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::withoutForeignKeyConstraints(function () {
-            Schema::dropIfExists('vehicle_models');
+            Schema::dropIfExists('model_category');
         });
     }
 };

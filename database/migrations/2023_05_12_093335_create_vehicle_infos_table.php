@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('vehicle_infos', function (Blueprint $table) {
             $table->id();
-        //     $table->string('model_id');
-        //     $table->string('color');
-        //     $table->string('license_plate');
-        //     $table->unsignedSmallInteger('max_seats');
+            $table->foreignId('trip_id')->constrained('trips');
+            $table->foreignId('model_id')->constrained('vehicle_models');
+            $table->foreignId('category_id')->constrained('vehicle_categories');
+            $table->string('color');
+            $table->string('license_plate');
+            $table->unsignedSmallInteger('max_seats');
         });
     }
 

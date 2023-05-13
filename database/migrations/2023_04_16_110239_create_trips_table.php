@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
             $table->foreignId('driver_id')->constrained('users');
-            $table->foreignId('vehicle_info_id')->constrained('vehicle_infos');
             $table->dateTime('departure_datetime');
             $table->boolean('instant_booking');
             $table->point('departure_coord');
