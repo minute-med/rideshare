@@ -16,6 +16,8 @@ import { Head, Link } from '@inertiajs/vue3';
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <Link :href="route('trip.create')" as="button" method="get">Create Trip</Link>
+                    <br>
+                    <Link :href="route('search.index')" as="button" method="get">search Trip</Link>
                 </div>
             </div>
         </div>

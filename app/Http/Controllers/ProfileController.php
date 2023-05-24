@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\MessageStatus;
 
 class ProfileController extends Controller
 {
@@ -59,5 +60,17 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function trips ()
+    {
+        $trips = Auth::user()->trips()->with('passengers','messages')->get();
+        return Inertia::render('Profile/Trips', ['trips' => $trips]);
+    }
+
+    public function bookings ()
+    {
+        $bookings = Auth::user()->bookings()->with('driver', 'passengers', 'messages')->get();
+        return Inertia::render('Profile/Bookings', [ 'bookings' => $bookings ]);
     }
 }

@@ -2,7 +2,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@/*": ["resources/js/*"]
+            "@/*": ["resources/js/*", "./node-chat/server.js"]
         }
     },
     "exclude": ["node_modules", "public"]

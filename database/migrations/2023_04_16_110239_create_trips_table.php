@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('driver_id')->constrained('users');
             $table->dateTime('departure_datetime');
-            $table->boolean('instant_booking');
+            $table->boolean('instant_booking')->default(false);
             $table->point('departure_coord');
             $table->point('arrival_coord');
+            $table->string('departure_addr');
+            $table->string('arrival_addr');
+            $table->integer('price');
             $table->timestamps();
         });
     }

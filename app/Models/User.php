@@ -47,4 +47,7 @@ class User extends Authenticatable
         return $this->HasMany(Trip::class, 'driver_id');
     }
 
+    public function bookings() {
+        return $this->belongsToMany(Trip::class, 'trip_passenger', 'passenger_id', 'trip_id')->using(TripPassenger::class);
+    }
 }

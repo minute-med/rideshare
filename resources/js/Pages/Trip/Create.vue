@@ -30,14 +30,7 @@ const zoom = ref(7);
 const rotation = ref(0);
 const vectorsource = ref(null);
 
-const Geom = inject("ol-geom");
 const Feature = inject("ol-feature");
-
-// const format = inject('ol-format');
-// const geoJson = new format.GeoJSON();
-
-const departureAddress = ref('')
-const arrivalAddress = ref('')
 
 const departureResults = ref([])
 const arrivalResults = ref([])
@@ -48,6 +41,9 @@ const filteredVehicleCategory = ref([])
 const form = useForm({
     instant_booking: false,
     departure_datetime: null,
+    departure_addr: null,
+    arrival_addr: null,
+    price: null,
     departure_coord: {
         lat: null,
         lon: null
@@ -111,7 +107,7 @@ function selectArrival(addr) {
     arrivalResults.value.splice(0)
     form.arrival_coord.lat = addr.lat
     form.arrival_coord.lon = addr.lon
-    arrivalAddress.value = addr.display_name
+    form.arrival_addr = addr.display_name
     vectorsource.value.source.forEachFeature(function (feature) {
         if (feature.get('name') === 'arrival') {
             vectorsource.value.source.removeFeature(feature)
@@ -124,7 +120,7 @@ function selectDeparture(addr) {
     departureResults.value.splice(0)
     form.departure_coord.lat = addr.lat
     form.departure_coord.lon = addr.lon
-    departureAddress.value = addr.display_name
+    form.departure_addr = addr.display_name
     
     vectorsource.value.source.forEachFeature(function (feature) {
         if (feature.get('name') === 'departure') {
@@ -155,7 +151,7 @@ function selectVehicleModel (evt) {
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Create Trip" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Trip</h2>
@@ -165,7 +161,7 @@ function selectVehicleModel (evt) {
                 <form @submit.prevent="submit">
                             <div class="w-full px-3">
                                 <label for="departure_datetime" class="block text-sm font-bold mb-2">Departure Date & time</label>
-                                <VueDatePicker v-model="form.departure_datetime"></VueDatePicker>
+                                <VueDatePicker id="departure_datetime" v-model="form.departure_datetime"></VueDatePicker>
                                 <p v-if="form.errors.departure_datetime" class="text-red-500 text-xs italic">{{ form.errors.departure_datetime }}</p>
                             </div>
                             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -175,7 +171,7 @@ function selectVehicleModel (evt) {
                                 id="from"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 @keyup="updateDepartureResults"
-                                v-model="departureAddress"
+                                v-model="form.departure_addr"
                                 />
                                 <ul v-if="departureResults.length > 0">
                                     <li v-for="addr in departureResults" @click="selectDeparture(addr)">{{ addr.display_name }}</li>
@@ -187,9 +183,9 @@ function selectVehicleModel (evt) {
                                 <label for="to" class="block text-sm font-bold mb-2">To :</label>
                                 <input 
                                 id="to" 
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"
                                 @keyup="updateArrivalResults"
-                                v-model="arrivalAddress"
+                                v-model="form.arrival_addr"
                                 />
                                 <ul v-if="arrivalResults.length > 0">
                                     <li v-for="addr in arrivalResults" @click="selectArrival(addr)">{{ addr.display_name }}</li>
@@ -197,24 +193,31 @@ function selectVehicleModel (evt) {
                                 <p v-if="form.errors['arrival_coord.lat']" class="text-red-500 text-xs italic">{{ form.errors['arrival_coord.lat'] }}</p>
                                 <p v-if="form.errors['arrival_coord.lon']" class="text-red-500 text-xs italic">{{ form.errors['arrival_coord.lon'] }}</p>
                             </div>
-                            <div>
+                            <div class="w-full md:w-1/2 py-3 px-3">
+                                <label class="block text-sm font-bold mb-2" for="price">
+                                    price
+                                </label>
+                                <input type="number" step=".01" id="price" v-model="form.price" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
+                                <p v-if="form.errors['price']" class="text-red-500 text-xs italic">{{ form.errors['price'] }}</p>
+                            </div>
+                            <div class="py-3 px-3">
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input 
                                     type="checkbox" 
                                     v-model="form.instant_booking" 
                                     class="sr-only peer">
                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                    <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Toggle me</span>
+                                    <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Instant Booking</span>
                                 </label>
                             </div>
 
-                            <div>
+                            <div class="px-3">
                                 <select name="" @change="selectVehicleBrand">
                                     <option v-for="brand in vehicle_brands" :value="brand.id">{{ brand.name }}</option>
                                 </select>
 
                             </div>
-                            <div v-if="filteredVehicleModels.length">
+                            <div class="px-3" v-if="filteredVehicleModels.length">
                                 <select v-model="form.vehicle_info.model_id" @change="selectVehicleModel">
                                     <option selected>&nbsp;</option>
                                     <option v-for="model in filteredVehicleModels" :value="model.id">{{ model.name }}</option>
@@ -222,7 +225,7 @@ function selectVehicleModel (evt) {
                                 <p v-if="form.errors['vehicle_info.model_id']" class="text-red-500 text-xs italic">{{ form.errors['vehicle_info.model_id'] }}</p>
                             </div>
 
-                            <div v-if="filteredVehicleCategory.length">
+                            <div class="px-3" v-if="filteredVehicleCategory.length">
                                 <select v-model="form.vehicle_info.category_id">
                                     <option selected>&nbsp;</option>
                                     <option v-for="cat in filteredVehicleCategory" :value="cat.id">{{ cat.name }}</option>
@@ -230,7 +233,7 @@ function selectVehicleModel (evt) {
                                 <p v-if="form.errors['vehicle_info.category_id']" class="text-red-500 text-xs italic">{{ form.errors['vehicle_info.category_id'] }}</p>
                             </div>
                         
-                            <div>
+                            <div class="px-3">
                                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                     Vehicle Color
                                 </label>
@@ -238,7 +241,7 @@ function selectVehicleModel (evt) {
                                 <p v-if="form.errors['vehicle_info.color']" class="text-red-500 text-xs italic">{{ form.errors['vehicle_info.color'] }}</p>
                             </div>
 
-                        <div>
+                        <div class="px-3">
                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                 license plate
                             </label>

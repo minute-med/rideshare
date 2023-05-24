@@ -18,3 +18,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/valhalla/custom_files/
+/node-chat/node_modules/

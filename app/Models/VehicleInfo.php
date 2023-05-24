@@ -27,4 +27,12 @@ class VehicleInfo extends Model
         'color',
         'license_plate',
     ];
+
+    public function model() {
+        return $this->BelongsTo(VehicleModel::class, 'model_id');
+    }
+
+    public function category() {
+        return $this->BelongsTo(VehicleCategory::class, 'category_id');
+    }
 }

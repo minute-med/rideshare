@@ -27,6 +27,7 @@ services:
             - meilisearch
             - mailpit
             - selenium
+            - nominatim
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -112,6 +113,53 @@ services:
         volumes:
             - nominatim-data:/var/lib/postgresql/14/main
         shm_size: 1gb
+    valhalla:
+        image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+        container_name: valhalla_latest
+        ports:
+            - 8002:8002
+        build:
+         context: ./valhalla
+         args:
+           - VALHALLA_UID=1000
+           - VALHALLA_GID=1000
+        volumes:
+        - ./valhalla/custom_files/:/custom_files
+        # - ./gtfs_feeds:/gtfs_feeds  # only enable with build_transit=True
+        environment:
+        # Auto-download PBFs from Geofabrik
+        
+        - tile_urls=https://download.geofabrik.de/asia/cambodia-latest.osm.pbf
+        - server_threads=2  # determines how many threads will be used to run the valhalla server
+        - serve_tiles=True  # If True, starts the service. If false, stops after building the graph.
+        - use_tiles_ignore_pbf=True  # load existing valhalla_tiles.tar directly
+        - tileset_name=valhalla_tiles_cambodia  # name of the resulting graph on disk
+        - build_elevation=False  # build elevation with "True" or "Force": will download only the elevation for areas covered by the graph tiles
+        - build_admins=False  # build admins db with "True" or "Force"
+        - build_time_zones=False  # build timezone db with "True" or "Force"
+        - build_transit=False  # build transit, needs existing GTFS directories mapped to /gtfs_feeds
+        - build_tar=True  # build an indexed tar file from the tile_dir for faster graph loading times
+        - force_rebuild=False  # forces a rebuild of the routing tiles with "True"
+        # - path_extension=graphs  # this path will be internally appended to /custom_files; no leading or trailing path separator!
+        # adapt to the expected build time
+        # healthcheck: 
+        #   test: curl --fail -s http://localhost:8002/status || exit 1
+        #   interval: 1s
+        #   retries: 10
+        #   start_period: 2s
+        #   timeout: 1s
+    nodejs:
+        container_name: nodejs
+        image: node:16.3.0-alpine
+        restart: always
+        ports: 
+            - "9000:9000"
+        volumes:
+            - ./node-chat:/home/node/app
+            - ./node_modules:/home/node/app/node_modules
+        command: node /home/node/app/server.js
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
