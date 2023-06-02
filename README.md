@@ -1,10 +1,10 @@
 ### TODO
 
-Misc
+- Profile
+    * add profile infos about user (smoker / listen music / like to chat / ...)
 
-- Create
-    * design form
 
 - Search Trip
-
-- Book Trip / Payment
+    * design results
+    * add seats number
+    * add logic (dont find expired trip + optimize location matching)

@@ -1,19 +1,34 @@
 <template>
 <AuthenticatedLayout>
-    <div>
-        from {{ trip.departure_addr.split(',')[0] }} to {{ trip.arrival_addr.split(',')[0] }}        
-    </div>
-    <div >
-        <p class="inline-flex">departure: {{ trip.departure_datetime }} &nbsp;</p>
-        <p class="inline-flex">available seats : {{ trip.vehicle_info.max_seats - trip.passengers.length }}</p>
-    </div>
-    
-    vehicle: {{ trip.vehicle_info.model.brand.name }} {{ trip.vehicle_info.model.name }} {{ trip.vehicle_info.category.name }}
-    <div class=" inline-flex" :style="{width:'20px', backgroundColor: trip.vehicle_info.color }">&nbsp</div>
-    
-    <div>driver: {{ trip.driver.name }}</div>
-    <PrimaryButton v-if="trip.instant_booking && trip.driver_id !== user.id">book</PrimaryButton>
-    <PrimaryButton v-else @click="open = true">request booking</PrimaryButton>
+  <div class="mx-8 my-8 flex">
+        <div class="w-1/2">
+          <div>
+            from {{ trip.departure_addr.split(',')[0] }} to {{ trip.arrival_addr.split(',')[0] }}        
+          </div>
+          <div >
+              <p class="inline-flex">departure: {{ trip.departure_datetime }} &nbsp;</p>
+              <p class="inline-flex">available seats : {{ trip.vehicle_info.max_seats - trip.passengers.length }}</p>
+          </div>
+
+          vehicle: {{ trip.vehicle_info.model.brand.name }} {{ trip.vehicle_info.model.name }} {{ trip.vehicle_info.category.name }}
+          <div class=" inline-flex" :style="{width:'20px', backgroundColor: trip.vehicle_info.color }">&nbsp</div>
+        
+          <div>driver: {{ trip.driver.name }}</div>
+          <div>
+            passengers:
+            <ul>
+              <li v-for="(passenger, index) in trip.passengers">- {{ passenger.name }}</li>
+            </ul>
+          </div>
+          <PrimaryButton 
+            v-if="!disabled && trip.instant_booking && trip.driver_id !== user.id"
+          >Book</PrimaryButton>
+          <PrimaryButton v-else-if="!disabled" @click="open = true">Request booking</PrimaryButton>
+        </div>
+        <div class="w-1/2">
+          <OSMap :routeCoord="tripRoute"></OSMap>
+        </div>
+  </div>
 
     <TransitionRoot as="template" :show="open">
     <Dialog as="div" class="relative z-10" @close="open = false">
@@ -36,7 +51,7 @@
                         <form @submit.prevent="submit">
                             <div>
                                 <label for="seats">seats</label>
-                                <input v-model="form.seats" type="number" :max="trip.vehicle_info.max_seats">
+                                <input v-model="form.seats" type="number" min="1" :max="trip.vehicle_info.max_seats">
                             </div>
                             <div>
                                 <label for="message">Message</label>
@@ -48,7 +63,7 @@
                 </div>
               </div>
               <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <button type="button" class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto" @click="submit">Request booking</button>
+                <button type="button" :disabled="disabled" class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto" @click="submit">Request booking</button>
                 <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" @click="open = false" ref="cancelButtonRef">Cancel</button>
               </div>
             </DialogPanel>
@@ -66,24 +81,27 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { ChatBubbleBottomCenterTextIcon } from '@heroicons/vue/24/outline'
 
+import OSMap from '@/Components/Custom/OSMap.vue';
+import decodePolyLine from '@/valhalla';
+
 const open = ref(false)
+const tripRoute = ref([])
 
 const page = usePage()
-
 const user = computed(() => page.props.auth.user)
-
-const bookingMessage = ref('')
 
 const props = defineProps({
     trip: {
         type: Object,
     }
 });
+
+let found = props.trip.passengers.find(p => p.id === user.value.id) !== undefined
+const disabled = ref(found)
 
 const form = useForm({
     bookingMessage: '',
@@ -94,6 +112,32 @@ function submit() {
   form.post(route('trip.book',{trip: props.trip.id}))
   open.value = false
 }
+
+onMounted(async () => {
+
+  const data = {
+    "locations":[
+        { "lon":props.trip.arrival_coord.lon, "lat": props.trip.arrival_coord.lat },
+        { "lon":props.trip.departure_coord.lon, "lat":props.trip.departure_coord.lat }
+    ],
+    "costing":"auto",
+    "narrative":false
+  };
+
+    const response = await fetch('http://localhost:8002/route', {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain",
+    },
+    body: JSON.stringify(data),
+  });
+
+  response.json().then(dat => {
+    const poly = decodePolyLine(dat.trip.legs[0].shape)
+    tripRoute.value.push(poly)
+  })
+
+})
 
 
 </script>

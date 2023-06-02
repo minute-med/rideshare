@@ -28,6 +28,8 @@ services:
             - mailpit
             - selenium
             - nominatim
+            - nodejs
+            - valhalla
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -117,7 +119,7 @@ services:
         image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
         container_name: valhalla_latest
         ports:
-            - 8002:8002
+            - "8002:8002"
         build:
          context: ./valhalla
          args:
@@ -148,6 +150,8 @@ services:
         #   retries: 10
         #   start_period: 2s
         #   timeout: 1s
+        networks:
+            - sail
     nodejs:
         container_name: nodejs
         image: node:16.3.0-alpine

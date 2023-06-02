@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\SearchTripRequest;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 use App\Models\Trip;
 
 class SearchController extends Controller
@@ -29,15 +30,16 @@ class SearchController extends Controller
         ->join('vehicle_infos', 'vehicle_infos.trip_id', '=', 'trips.id')
         ->leftJoin('trip_passenger', 'trips.id', '=', 'trip_passenger.trip_id')
         ->select(
-            DB::raw('trips.id, trips.departure_datetime'),
+            DB::raw('trips.id, trips.departure_datetime, trips.driver_id'),
             DB::raw('COUNT(trip_passenger.passenger_id) as used_seats'),
             DB::raw('vehicle_infos.max_seats'),
             DB::raw("ST_Distance_Sphere(". $guestDeparturePoint.", departure_coord)/1000 as departure_distance"),
             DB::raw("ST_Distance_Sphere(".$guestArrivalPoint.", arrival_coord)/1000 as arrival_distance")
         )
-        ->groupByRaw('trips.id, vehicle_infos.max_seats, trips.departure_datetime')
+        ->groupByRaw('trips.id, vehicle_infos.max_seats, trips.departure_datetime, trips.driver_id')
         ->havingRaw('used_seats < vehicle_infos.max_seats')
         ->havingRaw('departure_distance < 10')
+        ->havingRaw('trips.driver_id != ' . Auth::user()->id)
         ->havingRaw("DATEDIFF(trips.departure_datetime, '$departure_datetime') = 0")
         ->get();
         
@@ -45,7 +47,8 @@ class SearchController extends Controller
         $results = Trip::whereIn('id', $res)->with(['driver', 'vehicleInfo', 'passengers'])->get();
 
         return Inertia::render('Trip/Search', [
-            'search_results' => $results->toArray()
+            'search_results' => $results->toArray(),
+            'form_data' => (object) $r->all()
         ]);
     }
 }

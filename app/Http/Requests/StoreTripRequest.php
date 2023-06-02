@@ -22,15 +22,15 @@ class StoreTripRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'departure_datetime'    => 'required|date|after:today',
-            'departure_addr'        => 'required|string',
-            'departure_coord.lat'   => 'required|numeric|between:-90,90',
-            'departure_coord.lon'   => 'required|numeric|between:-180,180',
-            'arrival_addr'          => 'required|string',
-            'arrival_coord.lat'     => 'required|numeric|between:-90,90',
-            'arrival_coord.lon'     => 'required|numeric|between:-180,180',
-            'instant_booking'       => 'boolean',
-            'price'                 => 'required|numeric|min:1',
+            'departure_datetime'            => 'required|date|after:today',
+            'departure_coord.display_name'  => 'required|string',
+            'departure_coord.lat'           => 'required|numeric|between:-90,90',
+            'departure_coord.lon'           => 'required|numeric|between:-180,180',
+            'arrival_coord.display_name'    => 'required|string',
+            'arrival_coord.lat'             => 'required|numeric|between:-90,90',
+            'arrival_coord.lon'             => 'required|numeric|between:-180,180',
+            'instant_booking'               => 'boolean',
+            'price'                         => 'required|numeric|min:1',
             'vehicle_info.model_id'         => 'required|exists:vehicle_models,id',
             'vehicle_info.category_id'      => 'required|exists:vehicle_categories,id',
             'vehicle_info.color'            => [

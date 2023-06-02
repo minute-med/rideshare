@@ -20,9 +20,9 @@ socket.on("disconnect", () => {
   state.connected = false;
 });
 
-socket.on("message", (message) => {
-    console.log('message from socket.io')
-    const msg = JSON.parse(message)
-    console.log(msg)
-    state.messageEvents.push(msg);
-});
+// socket.on("message", (message) => {
+//     console.log('message from socket.io')
+//     const msg = JSON.parse(message)
+//     console.log(msg)
+//     state.messageEvents.push(msg);
+// });

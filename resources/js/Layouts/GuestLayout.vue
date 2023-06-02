@@ -4,6 +4,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import Footer from './Footer.vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -48,7 +49,7 @@ defineProps({
                             <div class="hidden sm:flex sm:items-center sm:ml-6">
                                 <!-- Login / Register links -->
                                 <div class="ml-3 relative">
-                                    <div class="sm:fixed sm:top-0 sm:right-0 p-6">
+                                    <div v-if="!$page.props.auth.user" class="sm:fixed sm:top-0 sm:right-0 p-6">
                                             <NavLink
                                                 :href="route('login')"
                                                 class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
@@ -59,6 +60,15 @@ defineProps({
                                                 :href="route('register')"
                                                 class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                                                 >Register</NavLink
+                                            >
+                                    </div>
+                                    <div v-else class="sm:fixed sm:top-0 sm:right-0 p-6">
+                                        <Link
+                                                :href="route('logout')"
+                                                method="post"
+                                                as="button"
+                                                class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                                                >logout</Link
                                             >
                                     </div>
                                 </div>
@@ -103,6 +113,9 @@ defineProps({
                         class="sm:hidden"
                     >
                         <div class="pt-2 pb-3 space-y-1">
+                            <ResponsiveNavLink :href="route('welcome')" :active="route().current('welcome')">
+                                home
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('contact')" :active="route().current('contact')">
                                 Contact
                             </ResponsiveNavLink>
@@ -120,6 +133,7 @@ defineProps({
                 <main>
                     <slot />
                 </main>
+                <Footer></Footer>
         </div>
     </div>
 </template>

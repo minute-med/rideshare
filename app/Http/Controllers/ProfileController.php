@@ -64,13 +64,23 @@ class ProfileController extends Controller
 
     public function trips ()
     {
-        $trips = Auth::user()->trips()->with('passengers','messages')->get();
+        $dt = new \DateTime(date('Y-m-d',strtotime('today')), new \DateTimeZone("Asia/Phnom_Penh"));
+        $trips = Auth::user()->trips()
+        ->with('passengers','messages', 'driver')
+        ->whereDate('departure_datetime', '>', $dt)
+        ->get();
+        
         return Inertia::render('Profile/Trips', ['trips' => $trips]);
     }
 
     public function bookings ()
     {
-        $bookings = Auth::user()->bookings()->with('driver', 'passengers', 'messages')->get();
+        $dt = new \DateTime(date('Y-m-d',strtotime('today')), new \DateTimeZone("Asia/Phnom_Penh"));
+        $bookings = Auth::user()->bookings()
+        ->with('driver', 'passengers', 'messages')
+        ->whereDate('departure_datetime', '>', $dt)
+        ->get();
+        
         return Inertia::render('Profile/Bookings', [ 'bookings' => $bookings ]);
     }
 }

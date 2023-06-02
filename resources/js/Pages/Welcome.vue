@@ -1,6 +1,7 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
+import LandingPage from '@/Pages/Landing.vue'
 
 defineProps({
     canLogin: {
@@ -9,21 +10,13 @@ defineProps({
     canRegister: {
         type: Boolean,
     },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
 });
 </script>
 
 <template>
     <Head title="Welcome" />
     <GuestLayout>
-        hi
+        <LandingPage></LandingPage>
     </GuestLayout>
 </template>
 

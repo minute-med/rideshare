@@ -39,6 +39,11 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
+            'app_env' => [
+                'valhalla' => [
+                    'base_url' => config('valhalla.base_url', 'http://localhost:8002')
+                ]
+            ]
         ]);
     }
 }

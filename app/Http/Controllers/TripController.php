@@ -40,8 +40,8 @@ class TripController extends Controller
 
         $trip = Auth::user()->trips()->create([
             'price' => $request->input('price'),
-            'departure_addr' => $request->input('departure_addr'),
-            'arrival_addr' => $request->input('arrival_addr'),
+            'departure_addr' => $departure_coord['display_name'],
+            'arrival_addr' => $arrival_coord['display_name'],
             'departure_coord' => [
                 'lon' => $departure_coord['lon'],
                 'lat' => $departure_coord['lat'],
