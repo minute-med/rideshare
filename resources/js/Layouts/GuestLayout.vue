@@ -6,6 +6,8 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import Footer from './Footer.vue';
 
+import SelectLanguage from '@/Components/Custom/SelectLanguage.vue'
+
 const showingNavigationDropdown = ref(false);
 
 defineProps({
@@ -38,28 +40,29 @@ defineProps({
                                 <!-- Navigation Links -->
                                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                     <NavLink :href="route('welcome')" :active="route().current('welcome')">
-                                        Home
+                                        {{ $t('nav.home') }}
                                     </NavLink>
                                     <NavLink :href="route('contact')" :active="route().current('contact')">
-                                        Contact
+                                        {{ $t('nav.contact') }}
                                     </NavLink>
                                 </div>
                             </div>
-        
                             <div class="hidden sm:flex sm:items-center sm:ml-6">
+                                <!-- language selection -->
+                                <SelectLanguage></SelectLanguage>
                                 <!-- Login / Register links -->
                                 <div class="ml-3 relative">
                                     <div v-if="!$page.props.auth.user" class="sm:fixed sm:top-0 sm:right-0 p-6">
                                             <NavLink
                                                 :href="route('login')"
                                                 class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                                >Log in</NavLink
+                                                >{{ $t('login') }}</NavLink
                                             >
         
                                             <NavLink
                                                 :href="route('register')"
                                                 class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                                >Register</NavLink
+                                                >{{ $t('register') }}</NavLink
                                             >
                                     </div>
                                     <div v-else class="sm:fixed sm:top-0 sm:right-0 p-6">
@@ -114,18 +117,20 @@ defineProps({
                     >
                         <div class="pt-2 pb-3 space-y-1">
                             <ResponsiveNavLink :href="route('welcome')" :active="route().current('welcome')">
-                                home
+                                {{ $t('nav.home') }}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('contact')" :active="route().current('contact')">
-                                Contact
+                                {{ $t('nav.contact') }}
                             </ResponsiveNavLink>
                         </div>
         
                         <!-- Responsive Settings Options -->
                         <div class="pt-4 pb-1 border-t border-gray-200">
+                            <!-- language selection -->
+                            <SelectLanguage></SelectLanguage>
                             <div class="mt-3 space-y-1">
-                                <ResponsiveNavLink :href="route('login')"> Login </ResponsiveNavLink>
-                                <ResponsiveNavLink :href="route('register')"> Register</ResponsiveNavLink>
+                                <ResponsiveNavLink :href="route('login')"> {{ $t('login') }} </ResponsiveNavLink>
+                                <ResponsiveNavLink :href="route('register')">{{ $t('register') }}</ResponsiveNavLink>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 <script setup>
 
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 defineProps({
     modelValue: {
@@ -12,6 +13,8 @@ defineProps({
 const emits = defineEmits(['update:modelValue']);
 
 const input = ref(null);
+const { locale } = useI18n({ useScope: 'global' })
+
 
 onMounted(() => {
     if (input.value.hasAttribute('autofocus')) {
@@ -25,7 +28,7 @@ defineExpose({ focus: () => input.value.focus() });
 const addressResults = ref([])
 
 function getResults(term) {
-    return axios.get(`http://localhost:8080/search.php?q=${term}`)
+    return axios.get(`http://localhost:8080/search.php?q=${term}&accept-language=${locale.value}`)
 }
 
 function updateModelValue (addr) {

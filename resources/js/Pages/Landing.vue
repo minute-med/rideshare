@@ -22,18 +22,18 @@ import { Link } from '@inertiajs/vue3';
         </div>
         <div class="container relative mx-auto">
           <div class="items-center flex flex-wrap">
-            <div class="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
+            <div class="w-full px-4 ml-auto mr-auto text-center">
               <div class="pr-12">
                 <h1 class="text-white font-semibold text-5xl">
-                  Share a ride for your next trip
+                  {{ $t('landing.hero1') }}
                 </h1>
                 <p class="mt-4 text-lg text-gray-300">
                   <Link :href="route('search.index')" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                    join a trip
+                    {{ $t('landing.btnJoinTrip') }}
                   </Link>
                   or
                   <Link :href="route('trip.create')" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                    Create a trip
+                    {{ $t('landing.btnCreateTrip') }}
                   </Link>
                 </p>
               </div>

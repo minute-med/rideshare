@@ -41,19 +41,19 @@ function submit() {
         <form name="search" class="w-full max-w-6xl" @submit.prevent="submit">
             <div class="w-full flex flex-wrap -mx-3 mb-2">
                 <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                    <label for="from" class="block text-sm font-bold mb-2">From :</label>
+                    <label for="from" class="block text-sm font-bold mb-2">{{ $t('from') }}</label>
                     <InputAddressAutocomplete v-model="form.departure_coord"></InputAddressAutocomplete>
                     <p v-if="form.errors['departure_coord.lat']" class="text-red-500 text-xs italic">{{ form.errors['departure_coord.lat'] }}</p>
                     <p v-if="form.errors['departure_coord.lon']" class="text-red-500 text-xs italic">{{ form.errors['departure_coord.lon'] }}</p>
                 </div>
                 <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                    <label for="to" class="block text-sm font-bold mb-2">To :</label>
+                    <label for="to" class="block text-sm font-bold mb-2">{{ $t('to') }}</label>
                     <InputAddressAutocomplete v-model="form.arrival_coord"></InputAddressAutocomplete>
                     <p v-if="form.errors['arrival_coord.lat']" class="text-red-500 text-xs italic">{{ form.errors['arrival_coord.lat'] }}</p>
                     <p v-if="form.errors['arrival_coord.lon']" class="text-red-500 text-xs italic">{{ form.errors['arrival_coord.lon'] }}</p>
                 </div>
                 <div class="w-full md:w-1/5 px-3 mb-6 md:mb-0">
-                    <label for="departure_datetime" class="block text-sm font-bold mb-2">When</label>
+                    <label for="departure_datetime" class="block text-sm font-bold mb-2">{{ $t('when') }}</label>
                     <VueDatePicker 
                         v-model="form.departure_datetime"
                         model-type="yyyy-MM-dd HH:mm:ss"
@@ -63,7 +63,7 @@ function submit() {
                     <p v-if="form.errors.departure_datetime" class="text-red-500 text-xs italic">{{ form.errors.departure_datetime }}</p>
                 </div>
                 <div class="w-full md:w-1/4 px-3 mt-7">
-                    <PrimaryButton type="submit">Submit</PrimaryButton>
+                    <PrimaryButton type="submit">{{ $t('submit') }}</PrimaryButton>
                 </div>
             </div>
             <div>
