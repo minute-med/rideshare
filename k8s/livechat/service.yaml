@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: livechat
+  labels:
+    app: livechat
+spec:
+  type: LoadBalancer
+  selector:
+    app: livechat
+  ports:
+  - port: 9000
+    targetPort: 9000

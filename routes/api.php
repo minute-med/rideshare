@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ValhallaProxyController;
+use App\Http\Controllers\NominatimProxyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,4 +18,12 @@ use App\Http\Controllers\ValhallaProxyController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::group(['prefix'=>'valhalla','as'=>'valhalla.'], function(){
+    Route::post('/route', [ValhallaProxyController::class, 'route'])->name('route');
+});
+
+Route::group(['prefix'=>'nominatim','as'=>'nominatim.'], function(){
+    Route::get('/search', [NominatimProxyController::class, 'search'])->name('search');
 });

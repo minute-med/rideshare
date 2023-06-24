@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nominatim-config
+  labels:
+    app: nominatim
+data:
+  PBF_URL: 'https://download.geofabrik.de/asia/cambodia-latest.osm.pbf'
+  REPLICATION_URL: 'https://download.geofabrik.de/asia/cambodia-updates/'
+  NOMINATIM_TOKENIZER: 'icu'
+  PGHOSTADDR: '10.51.128.86'
+  PGDATABASE: 'nominatim'
+  PGUSER: 'nominatim'
+  UPDATE_MODE: 'none'
+  FREEZE: 'false'
+  REVERSE_ONLY: 'false'
+  IMPORT_WIKIPEDIA: 'false'
+  IMPORT_US_POSTCODES: 'false'
+  IMPORT_GB_POSTCODES: 'false'
+  IMPORT_TIGER_ADDRESSES: 'false'

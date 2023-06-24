@@ -36,7 +36,7 @@ function submitMessage () {
 
 socket.on("message", (data) => {
     const message = JSON.parse(data)
-    // state.messageEvents.push(message);
+    console.log(message)
 
     const msg = {
         id: props.messages.length+1,

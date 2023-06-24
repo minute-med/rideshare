@@ -6,6 +6,7 @@ use App\Enums\MessageStatus;
 use App\Http\Requests\StoreTripRequest;
 use App\Http\Requests\UpdateTripRequest;
 use App\Http\Requests\StoreMessageRequest;
+use App\Http\Requests\BookTripRequest;
 use App\Models\Trip;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
@@ -82,7 +83,7 @@ class TripController extends Controller
         //
     }
 
-    public function book (Request $r, Trip $trip)
+    public function book (BookTripRequest $r, Trip $trip)
     {
         $status = $trip->instant_booking ? PassengerStatusEnum::Approved : PassengerStatusEnum::Pending;
         $trip->passengers()->attach(Auth::user()->id, [

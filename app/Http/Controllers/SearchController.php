@@ -39,6 +39,7 @@ class SearchController extends Controller
         ->groupByRaw('trips.id, vehicle_infos.max_seats, trips.departure_datetime, trips.driver_id')
         ->havingRaw('used_seats < vehicle_infos.max_seats')
         ->havingRaw('departure_distance < 10')
+        // bug here when unauthenticated request
         ->havingRaw('trips.driver_id != ' . Auth::user()->id)
         ->havingRaw("DATEDIFF(trips.departure_datetime, '$departure_datetime') = 0")
         ->get();

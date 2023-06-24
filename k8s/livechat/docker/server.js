@@ -5,6 +5,8 @@ const redis = require('redis');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 
+const port = process.env.APP_PORT || 9000
+
 const io = new Server(server, {
     cors: {
       origin: "*"
@@ -16,7 +18,7 @@ io.on('connection', async (socket) => {
 
     const redisClient = redis.createClient({
         socket: {
-            host: 'redis'
+            host: process.env.REDIS_HOST
         }
     });
     
@@ -30,7 +32,7 @@ io.on('connection', async (socket) => {
         console.log('subscribed to "message" channel')
     });
 });
-  
-server.listen(9000, () => {
-    console.log('listening on *:9000');
+
+server.listen(port, () => {
+    console.log(`listening on *:${port}`);
 });

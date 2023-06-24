@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: valhalla-st
+spec:
+  selector:
+    matchLabels:
+      app: valhalla # has to match .spec.template.metadata.labels
+  serviceName: valhalla
+  template:
+    metadata:
+      name: valhalla
+      labels:
+       app: valhalla
+    spec:
+      containers:
+        - name: container-valhalla
+          image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+          envFrom:
+          - configMapRef:
+              name: valhalla-config
+          ports:
+            - containerPort: 8002
+          volumeMounts:
+            - name: valhalla-persistent-storage
+              mountPath: /custom_files
+      volumes:
+        - name: valhalla-persistent-storage
+          persistentVolumeClaim:
+            claimName: valhalla-pv-claim

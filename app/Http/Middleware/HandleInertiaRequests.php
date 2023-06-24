@@ -40,8 +40,11 @@ class HandleInertiaRequests extends Middleware
                 ]);
             },
             'app_env' => [
-                'valhalla' => [
-                    'base_url' => config('valhalla.base_url', 'http://localhost:8002')
+                'APP_URL'   => rtrim(config('APP_URL'), '/'),
+
+                'nominatim' => [
+                    'base_url' => config('nominatim.base_url', 'http://nominatim'),
+                    'port' => config('nominatim.port', 8080)
                 ]
             ]
         ]);

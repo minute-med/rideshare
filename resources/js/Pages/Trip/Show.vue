@@ -20,10 +20,7 @@
               <li v-for="(passenger, index) in trip.passengers">- {{ passenger.name }}</li>
             </ul>
           </div>
-          <PrimaryButton 
-            v-if="!disabled && trip.instant_booking && trip.driver_id !== user.id"
-          >Book</PrimaryButton>
-          <PrimaryButton v-else-if="!disabled" @click="open = true">Request booking</PrimaryButton>
+          <PrimaryButton v-if="!disabled && trip.driver_id !== user.id" @click="open = true">Book</PrimaryButton>
         </div>
         <div class="w-1/2">
           <OSMap :routeCoord="tripRoute"></OSMap>
@@ -52,10 +49,12 @@
                             <div>
                                 <label for="seats">seats</label>
                                 <input v-model="form.seats" type="number" min="1" :max="trip.vehicle_info.max_seats">
+                                <p v-if="form.errors.seats" class="text-red-500 text-xs italic">{{ form.errors.seats }}</p>
                             </div>
                             <div>
                                 <label for="message">Message</label>
-                                <textarea v-model="form.bookingMessage"></textarea>
+                                <textarea id="message" v-model="form.bookingMessage"></textarea>
+                                <p v-if="form.errors.bookingMessage" class="text-red-500 text-xs italic">{{ form.errors.bookingMessage }}</p>
                             </div>
                         </form>
                     </div>
@@ -109,8 +108,12 @@ const form = useForm({
 })
 
 function submit() {
-  form.post(route('trip.book',{trip: props.trip.id}))
-  open.value = false
+  form.post(route('trip.book', {
+    trip: props.trip.id
+  }), {
+    preserveScroll: true,
+    onSuccess: () => open.value = false,
+  })
 }
 
 onMounted(async () => {

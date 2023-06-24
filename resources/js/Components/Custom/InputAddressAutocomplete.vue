@@ -1,7 +1,8 @@
 <script setup>
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { usePage } from '@inertiajs/vue3'
 
 defineProps({
     modelValue: {
@@ -15,6 +16,10 @@ const emits = defineEmits(['update:modelValue']);
 const input = ref(null);
 const { locale } = useI18n({ useScope: 'global' })
 
+console.log('current locale: ' + locale.value)
+
+const page = usePage()
+const appURL = computed(() => page.props.app_env.APP_URL)
 
 onMounted(() => {
     if (input.value.hasAttribute('autofocus')) {
@@ -24,11 +29,10 @@ onMounted(() => {
 
 defineExpose({ focus: () => input.value.focus() });
 
-
 const addressResults = ref([])
 
 function getResults(term) {
-    return axios.get(`http://localhost:8080/search.php?q=${term}&accept-language=${locale.value}`)
+    return axios.get(`${appURL.value}/api/nominatim/search?q=${term}&accept-language=${locale.value}`)
 }
 
 function updateModelValue (addr) {

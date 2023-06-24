@@ -7,7 +7,10 @@ export const state = reactive({
 });
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.NODE_ENV === "production" ? undefined : "http://localhost:9000";
+const URL = process.env.NODE_ENV === "production" ? 'http://34.126.114.68:9000' : "http://localhost:9000";
+
+console.log('process.env.(VITE_)LIVECHAT_URL')
+console.log(process.env.LIVECHAT_URL)
 
 export const socket = io(URL);
 
@@ -19,10 +22,3 @@ socket.on("connect", () => {
 socket.on("disconnect", () => {
   state.connected = false;
 });
-
-// socket.on("message", (message) => {
-//     console.log('message from socket.io')
-//     const msg = JSON.parse(message)
-//     console.log(msg)
-//     state.messageEvents.push(msg);
-// });

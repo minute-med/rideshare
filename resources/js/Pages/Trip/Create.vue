@@ -30,7 +30,7 @@ const props = defineProps({
 });
 
 const page = usePage()
-const valhallaConfig = computed(() => page.props.app_env.valhalla)
+const appURL = computed(() => page.props.app_env.APP_URL)
 
 const a = axios.create()
 delete a.defaults.headers.post;
@@ -81,19 +81,20 @@ async function drawRoute() {
     
     if(departureCoordFilled && arrivalCoordFilled) {
         
-        const result = await a.post(`${valhallaConfig.value.base_url}/route`, {
+        // const result = await a.post(`${valhallaConfig.value.base_url}/route`, {
+        const result = await a.post(`${appURL.value}/api/valhalla/route`, {
             "locations":[
                 { "lon":form.arrival_coord.lon, "lat": form.arrival_coord.lat },
                 { "lon":form.departure_coord.lon, "lat":form.departure_coord.lat }
             ],
             "costing":"auto",
             "narrative":false
-        },
+        }/*,
         {
             headers: {
                 'Content-Type': 'text/plain'
             },
-        })
+        } */)
         const poly = decodePolyline(result.data.trip.legs[0].shape)
         tripRouteCoords.value.splice(0)
         tripRouteCoords.value.push(poly)

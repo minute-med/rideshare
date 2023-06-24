@@ -7,6 +7,8 @@ import { Link } from '@inertiajs/vue3';
 import Footer from './Footer.vue';
 
 import SelectLanguage from '@/Components/Custom/SelectLanguage.vue'
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -65,14 +67,41 @@ defineProps({
                                                 >{{ $t('register') }}</NavLink
                                             >
                                     </div>
-                                    <div v-else class="sm:fixed sm:top-0 sm:right-0 p-6">
-                                        <Link
-                                                :href="route('logout')"
-                                                method="post"
-                                                as="button"
-                                                class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                                >logout</Link
-                                            >
+                                    <div v-else>
+                                        <Dropdown align="right" width="48">
+                                            <template #trigger>
+                                                <span class="inline-flex rounded-md">
+                                                    <button
+                                                        type="button"
+                                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                    >
+                                                        {{ $page.props.auth.user.name }}
+
+                                                        <svg
+                                                            class="ml-2 -mr-0.5 h-4 w-4"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 20 20"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path
+                                                                fill-rule="evenodd"
+                                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                clip-rule="evenodd"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            </template>
+
+                                            <template #content>
+                                                <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                                <DropdownLink :href="route('profile.trips')"> Trips </DropdownLink>
+                                                <DropdownLink :href="route('profile.bookings')"> Bookings </DropdownLink>
+                                                <DropdownLink :href="route('logout')" method="post" as="button">
+                                                    Log Out
+                                                </DropdownLink>
+                                            </template>
+                                        </Dropdown>
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +157,23 @@ defineProps({
                         <div class="pt-4 pb-1 border-t border-gray-200">
                             <!-- language selection -->
                             <SelectLanguage></SelectLanguage>
-                            <div class="mt-3 space-y-1">
+
+                            <div v-if="$page.props.auth.user" class="px-4">
+                                <div class="font-medium text-base text-gray-800">
+                                    {{ $page.props.auth.user.name }}
+                                </div>
+                                <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
+                            </div>
+
+                            <div v-if="$page.props.auth.user" class="mt-3 space-y-1">
+                                <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
+                                <ResponsiveNavLink :href="route('profile.trips')"> Trips </ResponsiveNavLink>
+                                <ResponsiveNavLink :href="route('profile.bookings')"> Bookings </ResponsiveNavLink>
+                                <ResponsiveNavLink :href="route('logout')" method="post" as="button">
+                                    Log Out
+                                </ResponsiveNavLink>
+                            </div>
+                            <div v-else class="mt-3 space-y-1">
                                 <ResponsiveNavLink :href="route('login')"> {{ $t('login') }} </ResponsiveNavLink>
                                 <ResponsiveNavLink :href="route('register')">{{ $t('register') }}</ResponsiveNavLink>
                             </div>

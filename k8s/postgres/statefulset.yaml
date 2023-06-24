@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-st
+spec:
+  selector:
+    matchLabels:
+      app: postgres # has to match .spec.template.metadata.labels
+  serviceName: postgres
+  template:
+    metadata:
+      name: postgres
+      labels:
+       app: postgres
+    spec:
+      containers:
+        - name: container-postgres
+          image: postgis/postgis:14-3.3
+          envFrom:
+          - configMapRef:
+              name: postgres-config
+          env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rideshare-dev-secrets
+                key: postgres_password
+          ports:
+            - containerPort: 5432
+          # volumeMounts:
+          #   - name: postgres-persistent-storage
+          #     mountPath: /data
+      # volumes:
+      #   - name: postgres-persistent-storage
+      #     persistentVolumeClaim:
+      #       claimName: postgres-pv-claim

@@ -20,3 +20,6 @@ yarn-error.log
 /.vscode
 /valhalla/custom_files/
 /node-chat/node_modules/
+
+#custom
+/k8s/secrets/

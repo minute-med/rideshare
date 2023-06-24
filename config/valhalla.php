@@ -1,7 +1,7 @@
 <?php
 
 return [
-
-    'base_url' => env('VALHALLA_BASEURL', 'http://localhost:8002')
-
+    'protocol' => env('VALHALLA_PROTOCOL', 'http'),
+    'host' => env('VALHALLA_HOST', 'valhalla'),
+    'port'  => env('VALHALLA_PORT', 8002)
 ];

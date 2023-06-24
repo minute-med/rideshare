@@ -48,8 +48,8 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
+            'database' => env('DB_DATABASE', 'rideshare'),
+            'username' => env('DB_USERNAME', 'rideshare'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
@@ -130,7 +130,7 @@ return [
 
         'default' => [
             // 'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'host' => env('REDIS_HOST', 'redis'),
             // 'username' => env('REDIS_USERNAME'),
             // 'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
